@@ -33,6 +33,7 @@
 #define SOS_USB_DATA_SIZE                  32
 #define SOS_USB_NAME_SIZE                  20
 #define SOS_DURATION_FOREVER               0xfeff
+#define SOS_DURATION_MAX                   (SOS_DURATION_FOREVER - 1)
 #define SOS_PLAY_DURATION_FOREVER          0xfffe
 
 #define SOS_VENDOR_ID  0x16d0
@@ -57,8 +58,10 @@ struct sos_packet {
 
 int  sos_open(struct sos *);
 int  sos_read(struct sos *, struct sos_packet *packet);
+int  sos_write(struct sos *, struct sos_packet *packet);
 void sos_close(struct sos *);
 int  sos_boot(struct sos *);
 
-void
-sos_blinking_siren(struct sos_packet *packet);
+void sos_blinking_siren(struct sos_packet *packet);
+void sos_init_packet(struct sos_packet *packet);
+unsigned short sos_duration(int ms);

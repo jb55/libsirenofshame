@@ -97,36 +97,29 @@ sos_open(struct sos *sos) {
     libusb_open_device_with_vid_pid(sos->usb,
                                     SOS_VENDOR_ID,
                                     SOS_PRODUCT_ID);
-  libusb_device *device =
-    libusb_get_device(handle);
-
   if (!handle)
     return SOS_NOT_FOUND;
+
+  libusb_device *device =
+    libusb_get_device(handle);
 
   if (!device)
     return SOS_GET_DEVICE_FAILED;
 
   if (libusb_kernel_driver_active(handle, SOS_INTERFACE_NUMBER)) {
     ret = libusb_detach_kernel_driver(handle, SOS_INTERFACE_NUMBER);
-    if (ret != LIBUSB_SUCCESS) {
-      printf("libusb_detach_kernel_driver err: %s\n", libusb_strerror(ret));
+    if (ret != LIBUSB_SUCCESS)
       return SOS_DEVICE_BUSY;
-    }
   }
 
   ret = libusb_set_configuration(handle, 1);
-  if (ret != LIBUSB_SUCCESS) {
-    printf("libusb_set_configuration err: %s\n", libusb_strerror(ret));
+  if (ret != LIBUSB_SUCCESS)
     return SOS_DEVICE_BUSY;
-  }
 
   ret = libusb_claim_interface(handle, SOS_INTERFACE_NUMBER);
 
-  if (ret != LIBUSB_SUCCESS) {
-    printf("libusb_claim_interface err: %s\n", libusb_strerror(ret));
+  if (ret != LIBUSB_SUCCESS)
     return SOS_DEVICE_BUSY;
-  }
-
 
   sos->usb_handle = handle;
 
@@ -147,10 +140,8 @@ sos_send_message(struct sos *sos, unsigned char *message, int len) {
     libusb_control_transfer(sos->usb_handle, request_type, request,
                             0x0201, 0, message, len, SOS_TIMEOUT);
 
-  if (transferred <= 0) {
-    printf("libusb control_transfer err: %s\n", libusb_strerror(transferred));
+  if (transferred <= 0)
     return SOS_LIBUSB_ERROR;
-  }
 
   return SOS_OK;
 }
@@ -198,10 +189,8 @@ sos_get_input_report(struct sos *sos, unsigned char *message, int len, char cont
                             (1 << 8) | control, 0, message,
                             len, SOS_TIMEOUT);
 
-  if (transferred <= 0) {
-    printf("libusb control_transfer err: %s\n", libusb_strerror(transferred));
+  if (transferred <= 0)
     return SOS_LIBUSB_ERROR;
-  }
 
   return SOS_OK;
 }
@@ -216,6 +205,13 @@ sos_read(struct sos *sos, struct sos_packet *packet) {
   }
   sos_deserialize(packet, buffer, ARRAY_SIZE(buffer));
   return SOS_OK;
+}
+
+int
+sos_write(struct sos *sos, struct sos_packet *packet) {
+  unsigned char buffer[SOS_PACKET_SIZE];
+  sos_serialize(packet, buffer, ARRAY_SIZE(buffer));
+  return sos_send_message(sos, buffer, ARRAY_SIZE(buffer));
 }
 
 
@@ -236,4 +232,14 @@ sos_close(struct sos *sos) {
 
   if (sos->usb)
     libusb_exit(sos->usb);
+}
+
+unsigned short
+sos_duration(int ms) {
+  unsigned short result;
+  if (ms < 100) return 100;
+  result = ms / 100;
+  if (result > (SHRT_MAX - 10)) 
+    return SOS_DURATION_MAX;
+  return result;
 }
