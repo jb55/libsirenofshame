@@ -11,8 +11,16 @@ test: sirenofshame.o test.c
 sirenofshame.o: sirenofshame.c sirenofshame.h
 	$(CC) $(CFLAGS) -fPIC -c -o $@ $<
 
-install: sirenofshame.o
-	install -D sirenofshame.o $(PREFIX)/lib/sirenofshame.o
+libsirenofshame.a: sirenofshame.o
+	ar rcs $@ $<
+
+libsirenofshame.so: sirenofshame.o
+	$(CC) $< -shared -o $@
+
+install: libsirenofshame.a libsirenofshame.so
+	install -D libsirenofshame.a $(PREFIX)/lib/libsirenofshame-static.a
+	install -D libsirenofshame.so $(PREFIX)/lib/libsirenofshame.so
+	install -D sirenofshame.h $(PREFIX)/include/sirenofshame.h
 
 clean:
 	rm -f sirenofshame.o
