@@ -60,7 +60,6 @@ int  sos_open(struct sos *);
 int  sos_read(struct sos *, struct sos_packet *packet);
 int  sos_write(struct sos *, struct sos_packet *packet);
 void sos_close(struct sos *);
-int  sos_boot(struct sos *);
 
 void sos_blinking_siren(struct sos_packet *packet);
 void sos_init_packet(struct sos_packet *packet);

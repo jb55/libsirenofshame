@@ -26,15 +26,15 @@ int main(int argc, char *argv[])
   /*   return 1; */
   /* } */
 
-  sos_init_packet(&packet);
-  packet.led_mode = SOS_LED_MODE_MANUAL;
-  packet.leds[0] = 1;
-  packet.leds[1] = 0;
-  packet.leds[2] = 0;
-  packet.leds[3] = 0;
-  packet.leds[4] = 0;
+  sos_blinking_siren(&packet);
+  /* packet.led_mode = SOS_LED_MODE_MANUAL; */
+  /* packet.leds[0] = 1; */
+  /* packet.leds[1] = 0; */
+  /* packet.leds[2] = 0; */
+  /* packet.leds[3] = 0; */
+  /* packet.leds[4] = 0; */
 
-  packet.led_duration = sos_duration(2000);
+  packet.led_duration = sos_duration(5000);
 
   sos_write(&sos, &packet);
 
