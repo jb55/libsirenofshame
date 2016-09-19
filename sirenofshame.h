@@ -1,5 +1,5 @@
 
-#include <libusb.h>
+#include <libusb-1.0/libusb.h>
 
 #define SOS_LEDS 5
 #define SOS_PACKET_SIZE (1 + 37)
