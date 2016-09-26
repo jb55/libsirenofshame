@@ -1,0 +1,9 @@
+{
+  "name": "libsirenofshame",
+  "version": "0.0.1",
+  "repo": "https://github.com/jb55/libsirenofshame",
+  "description": "siren of shame C library",
+  "dependencies": {
+    "https://github.com/jb55/querystring.c": "0.0.2"
+  }
+}
