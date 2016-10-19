@@ -44,7 +44,6 @@ install-tools: siren-onoff
 	install -D siren-onoff $(PREFIX)/bin/siren-onoff
 
 install: libs
-	install -D siren-onoff.cgi $(PREFIX)/bin/siren-rest.cgi
 	install -D $(STATIC) $(PREFIX)/lib/$(STATIC)
 	install -D $(DYNAMIC) $(PREFIX)/lib/$(DYNAMIC)
 	install -D sirenofshame.h $(PREFIX)/include/sirenofshame.h
