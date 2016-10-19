@@ -10,17 +10,17 @@ LDFLAGS=$(LIBUSB_LDFLAGS)
 STATIC=libsirenofshame-static.a
 DEPS=$(wildcard deps/*/*.c)
 DYNAMIC=libsirenofshame.so
-BIN=siren-rest.cgi
+
 SRCS=sirenofshame.c $(DEPS)
 OBJS=$(SRCS:.c=.o)
 
-all: libs
+all: install-all siren-onoff
 
 libs: $(STATIC) $(DYNAMIC)
 
 cgi: $(BIN)
 
-test: $(OBJS) test.c
+siren-onoff: $(OBJS) siren-onoff.c
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
 siren-rest.cgi: web/cgi.c $(OBJS)
@@ -35,12 +35,16 @@ $(STATIC): $(OBJS)
 $(DYNAMIC): $(OBJS)
 	$(CC) $^ -shared -o $@
 
-install-all: install install-cgi
+install-all: install install-cgi install-tools
 
-install-cgi: $(BIN)
-	install -D $(BIN) $(PREFIX)/bin/$(BIN)
+install-cgi: siren-rest.cgi
+	install -D siren-rest.cgi $(PREFIX)/bin/siren-rest.cgi
+
+install-tools: siren-onoff
+	install -D siren-onoff $(PREFIX)/bin/siren-onoff
 
 install: libs
+	install -D siren-onoff.cgi $(PREFIX)/bin/siren-rest.cgi
 	install -D $(STATIC) $(PREFIX)/lib/$(STATIC)
 	install -D $(DYNAMIC) $(PREFIX)/lib/$(DYNAMIC)
 	install -D sirenofshame.h $(PREFIX)/include/sirenofshame.h

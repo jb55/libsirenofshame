@@ -1,5 +1,6 @@
 *.a
 *.so
 *.o
-siren-rest.fcgi
+siren-rest.cgi
 test
+siren-onoff
